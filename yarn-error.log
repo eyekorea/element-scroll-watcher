@@ -1,0 +1,57 @@
+Arguments: 
+  /Users/cttd/.nvm/versions/node/v14.9.0/bin/node /usr/local/Cellar/yarn/1.10.1/libexec/bin/yarn.js add elementScrollWatcher
+
+PATH: 
+  /Users/cttd/.nvm/versions/node/v14.9.0/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/Users/cttd/work/git/element-scroll-watcher/node_modules/.bin:/Users/cttd/.nvm/versions/node/v14.9.0/bin:/anaconda3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/anaconda3/bin
+
+Yarn version: 
+  1.10.1
+
+Node version: 
+  14.9.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.npmjs.org/elementScrollWatcher: Not found
+      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.10.1/libexec/lib/cli.js:61073:18)
+      at Request.self.callback (/usr/local/Cellar/yarn/1.10.1/libexec/lib/cli.js:120166:22)
+      at Request.emit (events.js:314:20)
+      at Request.<anonymous> (/usr/local/Cellar/yarn/1.10.1/libexec/lib/cli.js:121138:10)
+      at Request.emit (events.js:314:20)
+      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.10.1/libexec/lib/cli.js:121060:12)
+      at Object.onceWrapper (events.js:420:28)
+      at IncomingMessage.emit (events.js:326:22)
+      at endReadableNT (_stream_readable.js:1244:12)
+      at processTicksAndRejections (internal/process/task_queues.js:80:21)
+
+npm manifest: 
+  {
+    "name": "element-scroll-watcher",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "dev": "parcel ./src/index.html"
+    },
+    "keywords": [],
+    "author": "eyekorea0@gmail.com",
+    "license": "MIT",
+    "devDependencies": {
+      "parcel": "^1.12.4"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/eyekorea/element-scroll-watcher"
+    },
+    "bugs": {
+      "url": "https://github.com/eyekorea/element-scroll-watcher/issues"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

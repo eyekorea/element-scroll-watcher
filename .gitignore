@@ -89,3 +89,5 @@ sftp-config.json
 
 #history
 .history
+
+.cache
