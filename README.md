@@ -3,3 +3,27 @@
 
 ## install
 `npm install --save https://github.com/eyekorea/element-scroll-watcher.git`
+
+## use
+```js
+import ElementScrollWatcher from 'element-scroll-watcher';
+
+const esw = ElementScrollWatcher('.observeCheck', { 
+  root : window,
+  active : (element)=>{
+    element.classList.add('active');
+  },
+  deActive: (element)=>{
+    element.classList.remove('active');
+  }
+});
+```
+
+```html
+<div>
+  <div class="observeCheck" style="height:400px">observeCheck</div>
+  <div class="observeCheck" style="height:400px">observeCheck</div>
+  <div class="observeCheck" style="height:400px">observeCheck</div>
+  <div class="observeCheck" style="height:400px">observeCheck</div>
+<div>
+```
