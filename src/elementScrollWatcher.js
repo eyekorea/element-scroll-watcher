@@ -45,7 +45,7 @@ class ESW_ITEM {
 
     // element 의 개별 셋팅 값이 있는지 체크 하여 저장
     this.datumPointY = (()=>{
-      if( element.dataset['eswCheckX'] ) {
+      if( element.dataset['eswCheckY'] ) {
         return checkTargetPosXY(0, element.dataset['eswCheckY']).y;
       } else {
         return root.checkY;
