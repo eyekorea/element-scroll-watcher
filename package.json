@@ -2,7 +2,7 @@
   "name": "element-scroll-watcher",
   "version": "1.0.1",
   "description": "",
-  "main": "dist/ElementScrollWatcher.js",
+  "browser": "dist/ElementScrollWatcher.js",
   "scripts": {
     "dev": "parcel ./src/index.html",
     "build": "parcel build ./src/elementScrollWatcher.js"
