@@ -133,10 +133,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /**
- * 
- * @param {*} _x /left|right|center/ or pixel number
- * @param {*} _y /top|bottom|middle/ or pixel number
- * _x, _y 값을 체크하여 문자열인경우 유효한 값인지, 유효한 값이 아닌경우 px 값으로 리턴.
+ * class ElementScrollWatcher
+ * @author sanghyun jeung <eyekorea@cttd.co.kr>
+ */
+
+/**
+ * _x, _y 값을 체크하여 문자열인경우 유효한 값인지, 유효한 값이 아닌경우 px 값(Number)으로 리턴.
+ * @param {String|Number} _x left|right|center or pixel number
+ * @param {String|Number} _y top|bottom|middle or pixel number
+ * @returns {Object} x, y string|number
  */
 function checkTargetPosXY(_x, _y) {
   var xPosReg = /left|right|center/g;
@@ -149,9 +154,9 @@ function checkTargetPosXY(_x, _y) {
   };
 }
 /**
- *
+ * 난수를 리턴하는 함수.
  * @param {number} len
- * number 값의 자릿수를 갖는 난수를 리턴
+ * @returns {Number} len 의 값의 자릿수를 갖는 난수를 리턴
  */
 
 
@@ -162,21 +167,28 @@ function uid(len) {
 /**
  * esw 제어를 위한 클래스
  * 감시 되는 엘리먼트 별로 해당 클래스가 생성됨.
+ * @class
  */
 
 
-var ESW_ITEM = /*#__PURE__*/function () {
-  function ESW_ITEM(element, root) {
-    _classCallCheck(this, ESW_ITEM);
+var EswItem = /*#__PURE__*/function () {
+  /**
+   * 클래스 생성시 감시되는 element 와 메인으로 실행되는 클래스 자신을 받음.
+   * @constructor EswItem
+   * @param {HTMLElement} element 
+   * @param {ElementScrollWatcher} root 
+   */
+  function EswItem(element, root) {
+    _classCallCheck(this, EswItem);
 
     this.id = uid(); // object 체크를 위한 id 난수
 
     this.element = element;
-    this.element.dataset['eswId'] = this.id; // element 의 개별 셋팅 값이 있는지 체크 하여 저장
+    this.element.dataset.eswId = this.id; // element 의 개별 셋팅 값이 있는지 체크 하여 저장
 
     this.datumPointX = function () {
-      if (element.dataset['eswCheckX']) {
-        return checkTargetPosXY(element.dataset['eswCheckX'], 0).x;
+      if (element.dataset.eswCheckX) {
+        return checkTargetPosXY(element.dataset.eswCheckX, 0).x;
       } else {
         return root.checkX;
       }
@@ -186,8 +198,8 @@ var ESW_ITEM = /*#__PURE__*/function () {
 
 
     this.datumPointY = function () {
-      if (element.dataset['eswCheckX']) {
-        return checkTargetPosXY(0, element.dataset['eswCheckY']).y;
+      if (element.dataset.eswCheckY) {
+        return checkTargetPosXY(0, element.dataset.eswCheckY).y;
       } else {
         return root.checkY;
       }
@@ -197,7 +209,7 @@ var ESW_ITEM = /*#__PURE__*/function () {
 
     this.activeTimer = root.option.activeDelay; // 딜레이시간
 
-    this.isIntersecting = false; // 화면에 들어왔는지 유무
+    this._isIntersecting = false; // 화면에 들어왔는지 유무
 
     this.timer = null; // 타이머가 지정됨
 
@@ -206,30 +218,36 @@ var ESW_ITEM = /*#__PURE__*/function () {
     this.deActiveFunction = root.option.deActive; // 비활성화 되었을때 실행될 함수
   }
   /**
-   * @param {boolean} value
    * 화면안으로 들어오거나 나갔을때 해당 값을 셋팅 할 수 있음.
-   * 들어왔을 경우 true
-   * 나갔을 경우 false
    * 해당 값이 변경되면, 타이머를 초기화 하고 deActiveFunction 을 실행함.
+   * @param {boolean} value 
    */
 
 
-  _createClass(ESW_ITEM, [{
+  _createClass(EswItem, [{
     key: "active",
-    // 타이머를 활성화 하고, 함수 실행 준비 상태로 변경.
-    // isIntersecting 이 true 인 경우 최종 activeFunction 를 실행.
+
+    /**
+     * 타이머를 활성화 하고, 함수 실행 준비 상태로 변경.
+     * _isIntersecting 이 true 인 경우 최종 activeFunction 를 실행.
+     * @method
+     */
     value: function active() {
       var _this = this;
 
       if (this.timer === null) {
         this.timer = window.setTimeout(function () {
-          if (_this.isIntersecting) {
+          if (_this._isIntersecting) {
             _this.activeFunction(_this.element);
           }
         }, this.activeTimer);
       }
-    } // isIntersecting 값과 무관하게 강제로 함수 실행을 초기하고,
-    // deActiveFunction 을 실행함.
+    }
+    /**
+     * _isIntersecting 값과 무관하게 강제로 함수 실행을 초기하고,
+     * deActiveFunction 을 실행함.
+     * @method
+     */
 
   }, {
     key: "deActive",
@@ -242,9 +260,9 @@ var ESW_ITEM = /*#__PURE__*/function () {
       this.deActiveFunction(this.element);
     }
   }, {
-    key: "setIntersecting",
+    key: "isIntersecting",
     set: function set(value) {
-      if (value !== this.isIntersecting) {
+      if (value !== this._isIntersecting) {
         if (this.timer !== null) {
           window.clearTimeout(this.timer);
           this.timer = null;
@@ -255,12 +273,15 @@ var ESW_ITEM = /*#__PURE__*/function () {
         this.deActiveFunction(this.element);
       }
 
-      this.isIntersecting = value;
-    } // 화면을 기준으로 element 가 몇퍼센트에 위치하는지 리턴함.
-    // 엘리먼트 개별 기준값 을 대입한 값.
+      this._isIntersecting = value;
+    }
+    /**
+     * 엘리먼트 개별 기준값 을 대입한 값을 참고하여 화면기준으로 감시되는 엘리면트가 위치하는 Y 값의 백분율
+     * @returns {Number} 
+     */
 
   }, {
-    key: "getPercentY",
+    key: "percentY",
     get: function get() {
       var element = this.element,
           datumPointY = this.datumPointY;
@@ -287,11 +308,14 @@ var ESW_ITEM = /*#__PURE__*/function () {
       var y = rect.y + pointY;
       var percentY = (winHeight - y) / winHeight * 100;
       return percentY;
-    } // 화면을 기준으로 element 가 몇퍼센트에 위치하는지 리턴함.
-    // 엘리먼트 개별 기준값 을 대입한 값.
+    }
+    /**
+     * 엘리먼트 개별 기준값 을 대입한 값을 참고하여 화면기준으로 감시되는 엘리면트가 위치하는 X 값의 백분율
+     * @returns {Number} 
+     */
 
   }, {
-    key: "getPercentX",
+    key: "percentX",
     get: function get() {
       var element = this.element,
           datumPointX = this.datumPointX;
@@ -321,12 +345,12 @@ var ESW_ITEM = /*#__PURE__*/function () {
     }
   }]);
 
-  return ESW_ITEM;
+  return EswItem;
 }();
 /**
- * 
- * @param {*} elements 
  * string, nodeList, element 를 체크하여, [element] 로 리턴함.
+ * @param {String|HTMLElement|NodeList} elements 
+ * @returns {Array} [... elements] 
  */
 
 
@@ -341,20 +365,77 @@ function elementsArray(elements) {
     }
   }
 }
+/**
+ * ElementScrollWatcher 의 기본 setting 값
+ * @namespace defaultSetting
+ * @property {Window|HTMLElement} root - 스크롤 이벤트가 바인드 되는 영역.
+ * @property {Number} activePercentY   - 진입 체크 시작 포인트 
+ * @property {Number} deActivePercentY -  진입 체크 엔드 포인드
+ * @property {Number} activePercentX
+ * @property {Number} deActivePercentX
+ * @property {Number} activeDelay      - 진입시 해당 시간 후 함수 실행됨.
+ * @property {Number} threshold        - intersectionObserve 의 threshold 
+ * @property {null|function} active    - 진입했을때 실행될 callback 
+ * @property {null|function} deActive  - 나갔을때 실행될 callback
+ * @property {boolean} init            - 최초 init 을 할지 옵션
+ * @property {string|number} checkY    - top|middle|bottom|custom number(px),target 의 기준점.
+ * @property {string|number} checkX    - left|center|right|custom number(px)
+ */
 
-var ESW = /*#__PURE__*/function () {
-  function ESW(elements, set) {
+
+var defaultSetting = {
+  root: null,
+  activePercentY: 60,
+  deActivePercentY: 90,
+  activePercentX: 0,
+  deActivePercentX: 100,
+  activeDelay: 1000,
+  threshold: 0.1,
+  active: null,
+  deActive: null,
+  init: true,
+  checkY: 'top',
+  checkX: 'left'
+};
+/**
+ * 메인 class.
+ * 새로운 스크롤 감시자를 생성한다.
+ * @class
+ */
+
+var ElementScrollWatcher = /*#__PURE__*/function () {
+  /**
+   * @constructor
+   * @param {String|HTMLElement|HTMLCollection} elements String = selector ex) `.element` or `#id`
+   * @param {Ojbect} setting
+   * @param {Window|HTMLElement} setting.root - 스크롤 이벤트가 바인드 되는 영역.
+   * @param {Number} setting.activePercentY   - 진입 체크 시작 포인트 
+   * @param {Number} setting.deActivePercentY -  진입 체크 엔드 포인드
+   * @param {Number} setting.activePercentX
+   * @param {Number} setting.deActivePercentX
+   * @param {Number} setting.activeDelay     - 진입시 해당 시간 후 함수 실행됨.
+   * @param {Number} setting.threshold       - intersectionObserve 의 threshold 
+   * @param {null|function} setting.active   - 진입했을때 실행될 callback 
+   * @param {null|function} setting.deActive - 나갔을때 실행될 callback
+   * @param {boolean} setting.init           - 최초 init 을 할지 옵션
+   * @param {string|number} setting.checkY   - top|middle|bottom|custom number(px),target 의 기준점.
+   * @param {string|number} setting.checkX   - left|center|right|custom number(px)
+   */
+  function ElementScrollWatcher(elements) {
     var _this2 = this;
 
-    _classCallCheck(this, ESW);
+    var setting = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    _classCallCheck(this, ElementScrollWatcher);
 
     // set
-    var option = set;
-    option.root = set.root === null ? window : set.root;
+    var option = Object.assign({}, defaultSetting, setting);
+    ;
+    option.root = option.root === null ? window : option.root;
     var items = elementsArray(elements);
     var checkItems = [];
     var eswObject = {};
-    var XY = checkTargetPosXY(set.checkX, set.checkY);
+    var XY = checkTargetPosXY(option.checkX, option.checkY);
     var checkY = XY.y;
     var checkX = XY.x;
     var io = new IntersectionObserver(function (entries) {
@@ -364,7 +445,7 @@ var ESW = /*#__PURE__*/function () {
 
         var item = _this2.getEswObj(target);
 
-        item.esw.setIntersecting = entry.isIntersecting; // esw item 의 intersecting 값을 셋팅 한다.
+        item.esw.isIntersecting = entry.isIntersecting; // esw item 의 intersecting 값을 셋팅 한다.
         // 화면에 들어오는 element 는 checkItems 에 넣고,
         // 화면에서 나간 element 는 checkItems 에서 제거함.
         // 스크롤시 loop 가 계속 돌게 되기 때문에 성능을 고려하여...
@@ -393,17 +474,16 @@ var ESW = /*#__PURE__*/function () {
     option.init && this.init();
   }
   /**
-   * 
-   * @param {element} element 
    * element 의 dataset.eswId 값을 체크하여 object 를 리턴함.
-   * 없을 경우의 수는 없다....
+   * @param {element} element 
+   * @returns {Object} HTMLElement, id, esw object
    */
 
 
-  _createClass(ESW, [{
+  _createClass(ElementScrollWatcher, [{
     key: "getEswObj",
     value: function getEswObj(element) {
-      var id = element.dataset['eswId'];
+      var id = element.dataset.eswId;
       var esw = this.eswObject[id];
       return {
         element: element,
@@ -422,7 +502,7 @@ var ESW = /*#__PURE__*/function () {
       checkItems.forEach(function (element) {
         var item = _this3.getEswObj(element);
 
-        var itemYPercent = item.esw.getPercentY;
+        var itemYPercent = item.esw.percentY;
 
         if (option.activePercentY < itemYPercent) {
           if (option.deActivePercentY < itemYPercent) {
@@ -451,11 +531,11 @@ var ESW = /*#__PURE__*/function () {
       }
 
       items.forEach(function (element) {
-        if (!element.dataset['eswInit']) {
-          var esw = new ESW_ITEM(element, _this4);
+        if (!element.dataset.eswInit) {
+          var esw = new EswItem(element, _this4);
           _this4.eswObject[esw.id] = esw;
           io.observe(element, option.threshold);
-          element.dataset['eswInit'] = 'init';
+          element.dataset.eswInit = 'init';
         }
       });
       this.isInit = true;
@@ -463,7 +543,11 @@ var ESW = /*#__PURE__*/function () {
         _this4.mot();
       });
       this.mot();
-    } // 동적으로 element 가 생성 된 경우 사용.
+    }
+    /**
+     * 동적으로 element 가 생성 된 경우 사용.
+     * @param {HTMLCollection|HTMLElement|String} elements String = selector ex) `.element` or `#id`
+     */
 
   }, {
     key: "update",
@@ -483,42 +567,10 @@ var ESW = /*#__PURE__*/function () {
     value: function destroyed() {}
   }]);
 
-  return ESW;
+  return ElementScrollWatcher;
 }();
 
-var defaultSetting = {
-  root: null,
-  // scroll event bind element
-  activePercentY: 60,
-  // 진입 체크 시작 포인트 
-  deActivePercentY: 90,
-  // 진입 체크 엔드 포인드
-  activePercentX: 0,
-  deActivePercentX: 100,
-  activeDelay: 1000,
-  // 진입시 해당 시간 후 함수 실행됨.
-  threshold: 0.1,
-  // intersectionObserve 의 threshold 
-  active: null,
-  // 진입했을때 실행될 callback 
-  deActive: null,
-  // 나갔을때 실행될 callback
-  init: true,
-  // 최초 init 을 할지 옵션
-  checkY: 'top',
-  // top, middle, bottom, custom number(px) , target 의 기준점.
-  checkX: 'left' // left, center, right, custom number(px)
-
-};
-
-function ElementScrollWatcher(elements) {
-  var setting = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var set = Object.assign({}, defaultSetting, setting);
-  return new ESW(elements, set);
-}
-
-var _default = ElementScrollWatcher;
-exports.default = _default;
+exports.default = ElementScrollWatcher;
 },{}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -572,7 +624,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59651" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60047" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
