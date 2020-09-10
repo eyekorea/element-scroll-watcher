@@ -9,22 +9,82 @@
       width: 100%;
       height: 300px;
       background-color: orange;
-      transition: background-color .3s linear;
+      font-size: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      color: #000;
+      transition: background-color .3s linear, color .3s linear;
+      margin-bottom: 10px;
+    }
+    .esw-element span{
+      display: block;
+      padding: 20px 0;
+      text-align: center;
+      flex: 1;
     }
     .active{
       background-color: red;
     }
+    .direct{
+      color: blue;
+      font-weight: bold;
+    }
+    .screen-guide{
+      position: fixed;
+      border: 2px solid green;
+      width: 100%;
+      box-sizing: border-box;
+      left: 0;
+      right: 0;
+      top: 2%;
+      bottom: 40%;
+      background: rgba(49, 203, 114, .3);
+    }
   </style>
 </head>
 <body>
+  <div class="screen-guide"></div>
   <div class="wrap">
-    <div class="esw-element">1</div>
-    <div class="esw-element">2</div>
-    <div class="esw-element">3</div>
-    <div class="esw-element">4</div>
-    <div class="esw-element">5</div>
-    <div class="esw-element">6</div>
-    <div class="esw-element">7</div>
+    <div class="esw-element">
+      <span class="index">1</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element">
+      <span class="index">2</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element" data-esw-check-y="bottom">
+      <span class="index">3</span>
+      <span class="option">data-esw-check-y="bottom"</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element" data-esw-delay="100">
+      <span class="index">4</span>
+      <span class="option">data-esw-delay="100"</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element" data-esw-check-y="top">
+      <span class="index">5</span>
+      <span class="option">data-esw-check-y="top"</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element">
+      <span class="index">6</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element">
+      <span class="index">7</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
   </div>
   <script src="./index.js"></script>
 </body>
