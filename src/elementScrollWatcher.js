@@ -350,16 +350,6 @@ export default class ElementScrollWatcher {
         item.esw.deActive();
       }
 
-      // if( option.activePercentY < itemYPercent ){
-      //   if(option.deActivePercentY < itemYPercent ) {
-      //     item.esw.deActive();
-      //   } else {
-      //     item.esw.active();
-      //   }
-      // } else {
-      //   item.esw.deActive();
-      // }
-
       /**
        * @namespace percent
        * @property {Number} x - x축으로 이동된 양(백분율)
@@ -410,7 +400,7 @@ export default class ElementScrollWatcher {
   enable(){
     this.isDisable = false;
   }
-  destroyed(){
+  destroy(){
     const { items, io, option } = this;
     option.root.removeEventListener('scroll', this.boundMot, false);
     items.forEach(element => {

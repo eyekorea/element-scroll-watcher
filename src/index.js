@@ -75,7 +75,7 @@ enableBtn.addEventListener('click', ()=>{
   esw.enable();
 });
 destroyedBtn.addEventListener('click', ()=>{
-  esw.destroyed();
+  esw.destroy();
   console.log(esw);
   rowScrollElement.removeEventListener('scroll', eswEvent);
 });

@@ -117,5 +117,5 @@ rowScrollElement.addEventListener('scroll', eswEvent); // rowScroll 영역에 �
 ```js
 const esw = ElementScrollWatcher('.observeCheck');
 
-esw.destroyed(); // 클래스를 삭제
+esw.destroy(); // 클래스를 삭제
 ```
