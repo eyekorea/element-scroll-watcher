@@ -100,7 +100,6 @@ class EswItem {
    * 엘리먼트 개별 기준값 을 대입한 값을 참고하여 화면기준으로 감시되는 엘리면트가 위치하는 Y 값의 백분율
    * @returns {Number} 
    */
-  // TODO: 계산을 잘못 하고 있음. 수정 필요함.
   get percentY(){
     const { element, datumPointY } = this;
     const rect = element.getBoundingClientRect();
@@ -108,9 +107,9 @@ class EswItem {
       if( typeof datumPointY === 'string' ) {
         switch (datumPointY) {
           case 'top':
-            return rect.height;
-          case 'bottom':
             return 0;
+          case 'bottom':
+            return rect.height;
           default:
             return rect.height / 2;
         }
@@ -128,18 +127,19 @@ class EswItem {
    * 엘리먼트 개별 기준값 을 대입한 값을 참고하여 화면기준으로 감시되는 엘리면트가 위치하는 X 값의 백분율
    * @returns {Number} 
    */
+  // TODO: 개발 필요.
   get percentX(){
     const { element, datumPointX } = this;
     const rect = element.getBoundingClientRect();
     const pointX = (()=>{
       if( typeof datumPointX === 'string' ) {
         switch (datumPointX) {
-          case 'top':
+          case 'left':
             return 0;
-          case 'bottom':
-            return rect.height;
+          case 'right':
+            return rect.width;
           default:
-            return rect.height / 2;
+            return rect.width / 2;
         }
       } else {
         return datumPointX;
@@ -263,7 +263,7 @@ export default class ElementScrollWatcher {
    * @param {null|function} setting.direct   - 진입했을때 대기 없이 바로 실행 되는 callback
    * @param {null|function} setting.active   - 진입했을때 실행될 callback 
    * @param {null|function} setting.deActive - 나갔을때 실행될 callback
-   * @param {null|function} scroll           - 스크롤 될때 실행될 callback
+   * @param {null|function} setting.scroll   - 스크롤 될때 실행될 callback
    * @param {boolean} setting.init           - 최초 init 을 할지 옵션
    * @param {string|number} setting.checkY   - top|middle|bottom|custom number(px),target 의 기준점.
    * @param {string|number} setting.checkX   - left|center|right|custom number(px)
@@ -306,7 +306,9 @@ export default class ElementScrollWatcher {
       checkY,
       checkX,
       eswObject,
-      isInit : false
+      isInit : false,
+      isDisable : false, // 비활성화 유무
+      boundMot: null // scroll event 를 저장함.
     });
     option.init && this.init();
   }
@@ -324,14 +326,22 @@ export default class ElementScrollWatcher {
 
   // 스크롤시 실행함.
   mot(){
+    if( this.isDisable ) return false;
     const { checkItems , option } = this;
     checkItems.forEach(element => {
       const item = this.getEswObj(element);
       const itemYPercent = item.esw.percentY;
+      const itemXPercent = item.esw.percentX;
       const isIntersecting = item.esw._isIntersecting;
+
       
-      if( option.activePercentY < itemYPercent ){
-        if(option.deActivePercentY < itemYPercent ) {
+      const isActiveY = option.activePercentY < itemYPercent;
+      const isDeActiveY = option.deActivePercentY < itemYPercent;
+      const isActiveX = option.activePercentX < itemXPercent;
+      const isDeActiveX = option.deActivePercentX < itemXPercent;
+
+      if( isActiveY && isActiveX ){
+        if( isDeActiveY || isDeActiveX ) {
           item.esw.deActive();
         } else {
           item.esw.active();
@@ -339,16 +349,35 @@ export default class ElementScrollWatcher {
       } else {
         item.esw.deActive();
       }
-      option.scroll && option.scroll(element, itemYPercent, isIntersecting);
+
+      // if( option.activePercentY < itemYPercent ){
+      //   if(option.deActivePercentY < itemYPercent ) {
+      //     item.esw.deActive();
+      //   } else {
+      //     item.esw.active();
+      //   }
+      // } else {
+      //   item.esw.deActive();
+      // }
+
+      /**
+       * @namespace percent
+       * @property {Number} x - x축으로 이동된 양(백분율)
+       * @property {Number} y - y축으로 이동된 양(백분율)
+       */
+      const percent = {
+        x : itemXPercent, 
+        y : itemYPercent,
+      }
+      option.scroll && option.scroll(element, percent, isIntersecting);
     });
   }
 
   init(){
-    const { items, io, option } = this;
+    const { items, io, option, mot } = this;
+    this.boundMot = mot.bind(this);
     if( !this.isInit ) {
-      option.root.addEventListener('scroll', ()=>{
-        this.mot();
-      });
+      option.root.addEventListener('scroll', this.boundMot, false);
     }
 
     items.forEach(element => {
@@ -376,12 +405,30 @@ export default class ElementScrollWatcher {
     this.init();
   }
   disable(){
-    
+    this.isDisable = true;
   }
   enable(){
-
+    this.isDisable = false;
   }
   destroyed(){
-    
+    const { items, io, option } = this;
+    option.root.removeEventListener('scroll', this.boundMot, false);
+    items.forEach(element => {
+      io.unobserve(element);
+      delete element.dataset.eswId;
+      delete element.dataset.eswInit;
+    });
+
+    delete this.boundMot;
+    delete this.io;
+    delete this.items;
+    delete this.checkItems;
+    delete this.checkY;
+    delete this.checkX;
+    delete this.eswObject;
+    delete this.isInit;
+    delete this.isDisable;
+    delete this.option;
+    delete this;
   }
 }

@@ -8,21 +8,119 @@
       width: 100%;
       height: 300px;
       background-color: orange;
-      transition: background-color .3s linear;
+      font-size: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      color: #000;
+      transition: background-color .3s linear, color .3s linear;
+      margin-bottom: 10px;
+    }
+    .esw-element span{
+      display: block;
+      padding: 20px 0;
+      text-align: center;
+      flex: 1;
+    }
+    .row-scroll{
+      overflow: hidden;
+      overflow-x: auto;
+      width: 100%;
+      height: 300px;
+      margin-bottom: 20px;
+    }
+    .row-scroll-wrap{
+      width: 200%;
+    }
+    .row-scroll .esw-element{
+      display: block;
+      float: left;
+      width: 50%;
     }
     .active{
       background-color: red;
+    }
+    .direct{
+      color: blue;
+      font-weight: bold;
+    }
+    .screen-guide{
+      position: fixed;
+      border: 2px solid green;
+      width: 100%;
+      box-sizing: border-box;
+      left: 0;
+      right: 0;
+      top: 2%;
+      bottom: 60%;
+      background: rgba(49, 203, 114, .3);
+    }
+    .btn-group{
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
     }</style>
 </head>
 <body>
+  <div class="screen-guide"></div>
+  <div class="btn-group">
+    <button id="prepend">addElement</button>
+    <button id="update">update</button>
+    <button id="disable">disable</button>
+    <button id="enable">enable</button>
+    <button id="destroyed">destroyed</button>
+  </div>
   <div class="wrap">
-    <div class="esw-element">1</div>
-    <div class="esw-element">2</div>
-    <div class="esw-element">3</div>
-    <div class="esw-element">4</div>
-    <div class="esw-element">5</div>
-    <div class="esw-element">6</div>
-    <div class="esw-element">7</div>
+    <div class="esw-element">
+      <span class="index">1</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element">
+      <span class="index">2</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="row-scroll" id="rowScroll">
+      <div class="row-scroll-wrap">
+        <div class="esw-element" data-esw-check-x="center">
+          <span class="index">ROW 3-1</span>
+          <span class="option">data-esw-check-x="center"</span>
+          <span class="percent">0</span>
+          <span class="isIntersecting">false</span>
+        </div>
+        <div class="esw-element" data-esw-check-x="center">
+          <span class="index">ROW 3-2</span>
+          <span class="option">data-esw-check-x="center"</span>
+          <span class="percent">0</span>
+          <span class="isIntersecting">false</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="esw-element" data-esw-delay="100">
+      <span class="index">4</span>
+      <span class="option">data-esw-delay="100"</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element" data-esw-check-y="top">
+      <span class="index">5</span>
+      <span class="option">data-esw-check-y="top"</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element">
+      <span class="index">6</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
+    <div class="esw-element">
+      <span class="index">7</span>
+      <span class="percent">0</span>
+      <span class="isIntersecting">false</span>
+    </div>
   </div>
   <script src="/src.e31bb0bc.js"></script>
 </body>
