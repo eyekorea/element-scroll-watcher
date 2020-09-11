@@ -194,7 +194,7 @@ var EswItem = /*#__PURE__*/function () {
       }
 
       ;
-    }(); // element 의 개별 셋팅 값이 있는지 체크 하여 저장
+    }(); // element 의 개별 셋팅 y 값이 있는지 체크 하고 없으면 기본 셋팅값을 저장.
 
 
     this.datumPointY = function () {
@@ -205,9 +205,16 @@ var EswItem = /*#__PURE__*/function () {
       }
 
       ;
-    }();
+    }(); // element 의 개별 셋팅 delay 값이 있는지 체크 하고 없으면 기본 셋팅값을 적용.
 
-    this.activeTimer = root.option.activeDelay; // 딜레이시간
+
+    this.activeTimer = function () {
+      if (element.dataset.eswDelay) {
+        return parseInt(element.dataset.eswDelay, 10);
+      } else {
+        return root.option.activeDelay;
+      }
+    }();
 
     this._isIntersecting = false; // 화면에 들어왔는지 유무
 
@@ -216,6 +223,8 @@ var EswItem = /*#__PURE__*/function () {
     this.activeFunction = root.option.active; // 활성화 되었을때 실행될 함수
 
     this.deActiveFunction = root.option.deActive; // 비활성화 되었을때 실행될 함수
+
+    this.directFunction = root.option.direct; // 대기시간 없이 바로 실행될 함수
   }
   /**
    * 화면안으로 들어오거나 나갔을때 해당 값을 셋팅 할 수 있음.
@@ -225,22 +234,36 @@ var EswItem = /*#__PURE__*/function () {
 
 
   _createClass(EswItem, [{
-    key: "active",
+    key: "direct",
 
+    /**
+     * 타이머와 상관없이 진입시 실행되는 함수.
+     */
+    value: function direct() {
+      if (this._isIntersecting) {
+        this.directFunction && this.directFunction(this.element);
+      }
+    }
     /**
      * 타이머를 활성화 하고, 함수 실행 준비 상태로 변경.
      * _isIntersecting 이 true 인 경우 최종 activeFunction 를 실행.
      * @method
      */
+
+  }, {
+    key: "active",
     value: function active() {
       var _this = this;
+
+      var activeTimer = this.activeTimer;
 
       if (this.timer === null) {
         this.timer = window.setTimeout(function () {
           if (_this._isIntersecting) {
-            _this.activeFunction(_this.element);
+            _this.activeFunction && _this.activeFunction(_this.element);
           }
-        }, this.activeTimer);
+        }, activeTimer);
+        this.direct();
       }
     }
     /**
@@ -257,7 +280,7 @@ var EswItem = /*#__PURE__*/function () {
         this.timer = null;
       }
 
-      this.deActiveFunction(this.element);
+      this.deActiveFunction && this.deActiveFunction(this.element);
     }
   }, {
     key: "isIntersecting",
@@ -270,7 +293,7 @@ var EswItem = /*#__PURE__*/function () {
       }
 
       if (!value) {
-        this.deActiveFunction(this.element);
+        this.deActiveFunction && this.deActiveFunction(this.element);
       }
 
       this._isIntersecting = value;
@@ -313,6 +336,7 @@ var EswItem = /*#__PURE__*/function () {
      * 엘리먼트 개별 기준값 을 대입한 값을 참고하여 화면기준으로 감시되는 엘리면트가 위치하는 X 값의 백분율
      * @returns {Number} 
      */
+    // TODO: 개발 필요.
 
   }, {
     key: "percentX",
@@ -324,14 +348,14 @@ var EswItem = /*#__PURE__*/function () {
       var pointX = function () {
         if (typeof datumPointX === 'string') {
           switch (datumPointX) {
-            case 'top':
+            case 'left':
               return 0;
 
-            case 'bottom':
-              return rect.height;
+            case 'right':
+              return rect.width;
 
             default:
-              return rect.height / 2;
+              return rect.width / 2;
           }
         } else {
           return datumPointX;
@@ -375,8 +399,10 @@ function elementsArray(elements) {
  * @property {Number} deActivePercentX
  * @property {Number} activeDelay      - 진입시 해당 시간 후 함수 실행됨.
  * @property {Number} threshold        - intersectionObserve 의 threshold 
+ * @property {null|function} direct    - 진입했을때 대기 없이 바로 실행 되는 callback
  * @property {null|function} active    - 진입했을때 실행될 callback 
  * @property {null|function} deActive  - 나갔을때 실행될 callback
+ * @property {null|function} scroll    - 스크롤 될때 실행될 callback
  * @property {boolean} init            - 최초 init 을 할지 옵션
  * @property {string|number} checkY    - top|middle|bottom|custom number(px),target 의 기준점.
  * @property {string|number} checkX    - left|center|right|custom number(px)
@@ -391,8 +417,10 @@ var defaultSetting = {
   deActivePercentX: 100,
   activeDelay: 1000,
   threshold: 0.1,
+  direct: null,
   active: null,
   deActive: null,
+  scroll: null,
   init: true,
   checkY: 'top',
   checkX: 'left'
@@ -415,8 +443,10 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
    * @param {Number} setting.deActivePercentX
    * @param {Number} setting.activeDelay     - 진입시 해당 시간 후 함수 실행됨.
    * @param {Number} setting.threshold       - intersectionObserve 의 threshold 
+   * @param {null|function} setting.direct   - 진입했을때 대기 없이 바로 실행 되는 callback
    * @param {null|function} setting.active   - 진입했을때 실행될 callback 
    * @param {null|function} setting.deActive - 나갔을때 실행될 callback
+   * @param {null|function} setting.scroll   - 스크롤 될때 실행될 callback
    * @param {boolean} setting.init           - 최초 init 을 할지 옵션
    * @param {string|number} setting.checkY   - top|middle|bottom|custom number(px),target 의 기준점.
    * @param {string|number} setting.checkX   - left|center|right|custom number(px)
@@ -469,7 +499,11 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
       checkY: checkY,
       checkX: checkX,
       eswObject: eswObject,
-      isInit: false
+      isInit: false,
+      isDisable: false,
+      // 비활성화 유무
+      boundMot: null // scroll event 를 저장함.
+
     });
     option.init && this.init();
   }
@@ -497,22 +531,50 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
     value: function mot() {
       var _this3 = this;
 
+      if (this.isDisable) return false;
       var checkItems = this.checkItems,
           option = this.option;
       checkItems.forEach(function (element) {
         var item = _this3.getEswObj(element);
 
         var itemYPercent = item.esw.percentY;
+        var itemXPercent = item.esw.percentX;
+        var isIntersecting = item.esw._isIntersecting;
+        var isActiveY = option.activePercentY < itemYPercent;
+        var isDeActiveY = option.deActivePercentY < itemYPercent;
+        var isActiveX = option.activePercentX < itemXPercent;
+        var isDeActiveX = option.deActivePercentX < itemXPercent;
 
-        if (option.activePercentY < itemYPercent) {
-          if (option.deActivePercentY < itemYPercent) {
+        if (isActiveY && isActiveX) {
+          if (isDeActiveY || isDeActiveX) {
             item.esw.deActive();
           } else {
             item.esw.active();
           }
         } else {
           item.esw.deActive();
-        }
+        } // if( option.activePercentY < itemYPercent ){
+        //   if(option.deActivePercentY < itemYPercent ) {
+        //     item.esw.deActive();
+        //   } else {
+        //     item.esw.active();
+        //   }
+        // } else {
+        //   item.esw.deActive();
+        // }
+
+        /**
+         * @namespace percent
+         * @property {Number} x - x축으로 이동된 양(백분율)
+         * @property {Number} y - y축으로 이동된 양(백분율)
+         */
+
+
+        var percent = {
+          x: itemXPercent,
+          y: itemYPercent
+        };
+        option.scroll && option.scroll(element, percent, isIntersecting);
       });
     }
   }, {
@@ -522,12 +584,12 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
 
       var items = this.items,
           io = this.io,
-          option = this.option;
+          option = this.option,
+          mot = this.mot;
+      this.boundMot = mot.bind(this);
 
       if (!this.isInit) {
-        option.root.addEventListener('scroll', function () {
-          _this4.mot();
-        });
+        option.root.addEventListener('scroll', this.boundMot, false);
       }
 
       items.forEach(function (element) {
@@ -558,13 +620,38 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
     }
   }, {
     key: "disable",
-    value: function disable() {}
+    value: function disable() {
+      this.isDisable = true;
+    }
   }, {
     key: "enable",
-    value: function enable() {}
+    value: function enable() {
+      this.isDisable = false;
+    }
   }, {
     key: "destroyed",
-    value: function destroyed() {}
+    value: function destroyed() {
+      var items = this.items,
+          io = this.io,
+          option = this.option;
+      option.root.removeEventListener('scroll', this.boundMot, false);
+      items.forEach(function (element) {
+        io.unobserve(element);
+        delete element.dataset.eswId;
+        delete element.dataset.eswInit;
+      });
+      delete this.boundMot;
+      delete this.io;
+      delete this.items;
+      delete this.checkItems;
+      delete this.checkY;
+      delete this.checkX;
+      delete this.eswObject;
+      delete this.isInit;
+      delete this.isDisable;
+      delete this.option;
+      delete this;
+    }
   }]);
 
   return ElementScrollWatcher;
@@ -581,20 +668,83 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var esw = new _elementScrollWatcher.default('.esw-element', {
   activePercentY: 60,
   // 진입 체크 시작 포인트 
-  deActivePercentY: 90,
+  deActivePercentY: 98,
+  // 진입 체크 엔드 포인드
+  activePercentX: 20,
+  // 진입 체크 시작 포인트 
+  deActivePercentX: 98,
   // 진입 체크 엔드 포인드
   activeDelay: 1000,
   // 진입시 해당 시간 후 함수 실행됨.
   threshold: 0.1,
   // intersectionObserve 의 threshold 
+  direct: function direct(element) {
+    var indexElement = element.querySelector('.index');
+    indexElement.textContent = "".concat(indexElement.textContent, " inserted !!");
+    element.classList.add('direct');
+  },
   active: function active(element) {
     element.classList.add('active');
   },
   // 진입했을때 실행될 callback 
   deActive: function deActive(element) {
+    var indexElement = element.querySelector('.index');
+    indexElement.textContent = indexElement.textContent.replace(' inserted !!', '');
     element.classList.remove('active');
-  } // 나갔을때 실행될 callback
+    element.classList.remove('direct');
+  },
+  // 나갔을때 실행될 callback
+  scroll: function scroll(element, percent, isIntersecting) {
+    var y = percent.y.toFixed(2);
+    var x = percent.x.toFixed(2);
+    var percentElement = element.querySelector('.percent');
+    var intersectingElement = element.querySelector('.isIntersecting');
+    percentElement.textContent = "Y : ".concat(y, "%, X : ").concat(x);
+    intersectingElement.textContent = "".concat(isIntersecting); // console.log(element, ypercent, isIntersecting);
+  },
+  checkY: 'middle'
+});
+/**
+ *
+ * @param {string} str
+ * @return {HTMLElement}
+ */
 
+var stringToHtm = function stringToHtm(str) {
+  var domparser = new DOMParser();
+  return domparser.parseFromString(str, 'text/html').body.firstChild;
+};
+
+var template = function template() {
+  return "<div class=\"esw-element\">\n    <span class=\"index\">new</span>\n    <span class=\"percent\">0</span>\n    <span class=\"isIntersecting\">false</span>\n  </div>";
+};
+
+var prependBtn = document.querySelector('#prepend');
+var updateBtn = document.querySelector('#update');
+var disableBtn = document.querySelector('#disable');
+var enableBtn = document.querySelector('#enable');
+var destroyedBtn = document.querySelector('#destroyed');
+var wrapElement = document.querySelector('.wrap');
+var rowScrollElement = document.querySelector('#rowScroll');
+var eswEvent = esw.mot.bind(esw);
+rowScrollElement.addEventListener('scroll', eswEvent);
+prependBtn.addEventListener('click', function () {
+  var htm = stringToHtm(template());
+  wrapElement.prepend(htm);
+});
+updateBtn.addEventListener('click', function () {
+  esw.update('.esw-element');
+});
+disableBtn.addEventListener('click', function () {
+  esw.disable();
+});
+enableBtn.addEventListener('click', function () {
+  esw.enable();
+});
+destroyedBtn.addEventListener('click', function () {
+  esw.destroyed();
+  console.log(esw);
+  rowScrollElement.removeEventListener('scroll', eswEvent);
 });
 },{"./elementScrollWatcher":"elementScrollWatcher.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -624,7 +774,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60047" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61856" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
