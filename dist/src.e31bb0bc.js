@@ -553,16 +553,7 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
           }
         } else {
           item.esw.deActive();
-        } // if( option.activePercentY < itemYPercent ){
-        //   if(option.deActivePercentY < itemYPercent ) {
-        //     item.esw.deActive();
-        //   } else {
-        //     item.esw.active();
-        //   }
-        // } else {
-        //   item.esw.deActive();
-        // }
-
+        }
         /**
          * @namespace percent
          * @property {Number} x - x축으로 이동된 양(백분율)
@@ -629,8 +620,8 @@ var ElementScrollWatcher = /*#__PURE__*/function () {
       this.isDisable = false;
     }
   }, {
-    key: "destroyed",
-    value: function destroyed() {
+    key: "destroy",
+    value: function destroy() {
       var items = this.items,
           io = this.io,
           option = this.option;
@@ -742,7 +733,7 @@ enableBtn.addEventListener('click', function () {
   esw.enable();
 });
 destroyedBtn.addEventListener('click', function () {
-  esw.destroyed();
+  esw.destroy();
   console.log(esw);
   rowScrollElement.removeEventListener('scroll', eswEvent);
 });
@@ -774,7 +765,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61856" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56920" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
