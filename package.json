@@ -4,6 +4,9 @@
   "description": "",
   "browser": "dist/ElementScrollWatcher.js",
   "main": "dist/ElementScrollWatcher.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "dev": "parcel ./src/index.html",
     "build": "parcel build ./src/elementScrollWatcher.js"
