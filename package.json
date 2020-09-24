@@ -1,6 +1,6 @@
 {
   "name": "element-scroll-watcher",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "browser": "dist/ElementScrollWatcher.js",
   "main": "dist/ElementScrollWatcher.js",
