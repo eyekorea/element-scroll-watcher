@@ -2,20 +2,21 @@
   "name": "element-scroll-watcher",
   "version": "1.0.2",
   "description": "",
-  "browser": "dist/ElementScrollWatcher.js",
-  "main": "dist/ElementScrollWatcher.js",
+  "main": "dist/ElementScrollWatcher.cjs.js",
+  "module": "dist/ElementScrollWatcher.esm.js",
+  "browser": "dist/ElementScrollWatcher.umd.js",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "dev": "parcel ./src/index.html",
-    "build": "parcel build ./src/elementScrollWatcher.js"
+    "build": "rollup -c"
   },
   "keywords": [],
   "author": "eyekorea0@gmail.com",
   "license": "MIT",
   "devDependencies": {
-    "parcel": "^1.12.4"
+    "rollup": "^2.28.2",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "repository": {
     "type": "git",

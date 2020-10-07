@@ -1,4 +1,4 @@
-import ElementScrollWatcher from './elementScrollWatcher'
+import ElementScrollWatcher from './ElementScrollWatcher'
 
 const esw = new ElementScrollWatcher('.esw-element',{
   activePercentY: 60, // 진입 체크 시작 포인트 

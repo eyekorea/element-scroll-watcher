@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * class ElementScrollWatcher
  * @author sanghyun jeung <eyekorea@cttd.co.kr>
@@ -52,8 +54,7 @@ class EswItem {
         return checkTargetPosXY(element.dataset.eswCheckX, 0).x;
       } else {
         return root.checkX;
-      };
-    })();
+      }    })();
 
     // element 의 개별 셋팅 y 값이 있는지 체크 하고 없으면 기본 셋팅값을 저장.
     this.datumPointY = (()=>{
@@ -61,8 +62,7 @@ class EswItem {
         return checkTargetPosXY(0, element.dataset.eswCheckY).y;
       } else {
         return root.checkY;
-      };
-    })();
+      }    })();
     // element 의 개별 셋팅 delay 값이 있는지 체크 하고 없으면 기본 셋팅값을 적용.
     this.activeTimer = (()=>{
       if( element.dataset.eswDelay ) {
@@ -241,14 +241,14 @@ const defaultSetting = {
   init: true,
   checkY: 'top',
   checkX: 'left'
-}
+};
 
 /**
  * 메인 class.
  * 새로운 스크롤 감시자를 생성한다.
  * @class
  */
-export default class ElementScrollWatcher {
+class ElementScrollWatcher {
   /**
    * @constructor
    * @param {String|HTMLElement|HTMLCollection} elements String = selector ex) `.element` or `#id`
@@ -270,8 +270,7 @@ export default class ElementScrollWatcher {
    */
   constructor(elements, setting={}){
     // set
-    const option = Object.assign({}, defaultSetting, setting);;
-    option.root = option.root === null ? window : option.root
+    const option = Object.assign({}, defaultSetting, setting);    option.root = option.root === null ? window : option.root;
     const items = elementsArray(elements);
     const checkItems = [];
     const eswObject = {};
@@ -358,7 +357,7 @@ export default class ElementScrollWatcher {
       const percent = {
         x : itemXPercent, 
         y : itemYPercent,
-      }
+      };
       option.scroll && option.scroll(element, percent, isIntersecting);
     });
   }
@@ -375,9 +374,9 @@ export default class ElementScrollWatcher {
         const esw = new EswItem(element, this);
         this.eswObject[esw.id] = esw;
         io.observe(element, option.threshold);
-        element.dataset.eswInit = 'init'
+        element.dataset.eswInit = 'init';
       }
-    })
+    });
     this.isInit = true;
     window.addEventListener('load', ()=>{
       this.mot();  
@@ -419,6 +418,7 @@ export default class ElementScrollWatcher {
     delete this.isInit;
     delete this.isDisable;
     delete this.option;
-    delete this;
   }
 }
+
+module.exports = ElementScrollWatcher;
