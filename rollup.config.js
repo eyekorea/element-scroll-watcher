@@ -2,12 +2,12 @@ import pkg from "./package.json";
 import {terser} from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
+import del from 'rollup-plugin-delete'
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-
-
 const devPlugin = () => [
+  del({ targets: 'dist/*' }),
   serve({
     open: true,
     openPage: "/demo/",
@@ -16,6 +16,10 @@ const devPlugin = () => [
   }),
   livereload(),
 ];
+
+const productPlugin = () => [
+  del({ targets: 'dist/*' }),
+]
 
 const config = {
   input: "src/element-scroll-watcher.js",
@@ -55,7 +59,7 @@ const config = {
       plugins: [terser()]
     }
   ],
-  plugins: isProduction ? [] : devPlugin()
+  plugins: isProduction ? productPlugin() : devPlugin()
 }
 
 export default [
