@@ -2,20 +2,32 @@
   "name": "element-scroll-watcher",
   "version": "1.0.2",
   "description": "",
-  "browser": "dist/ElementScrollWatcher.js",
-  "main": "dist/ElementScrollWatcher.js",
+  "main": "dist/element-scroll-watcher.cjs.js",
+  "module": "dist/element-scroll-watcher.esm.js",
+  "browser": "dist/element-scroll-watcher.umd.js",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "dev": "parcel ./src/index.html",
-    "build": "parcel build ./src/elementScrollWatcher.js"
+    "dev": "cross-env NODE_ENV=develope rollup -c -w",
+    "build": "cross-env NODE_ENV=production rollup -c",
+    "format": "prettier-eslint --config \"$(pwd)/.prettierrc\" --eslint-config-path \"$(pwd)/.eslintrc.json\" --list-different --write \"$(pwd)/src/**/*.js\""
   },
   "keywords": [],
   "author": "eyekorea0@gmail.com",
   "license": "MIT",
   "devDependencies": {
-    "parcel": "^1.12.4"
+    "cross-env": "^7.0.2",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "2.1.2",
+    "prettier-eslint-cli": "^5.0.0",
+    "rollup": "^2.28.2",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-serve": "^1.0.4",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "repository": {
     "type": "git",
