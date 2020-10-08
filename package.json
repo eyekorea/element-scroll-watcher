@@ -2,20 +2,25 @@
   "name": "element-scroll-watcher",
   "version": "1.0.2",
   "description": "",
-  "main": "dist/ElementScrollWatcher.cjs.js",
-  "module": "dist/ElementScrollWatcher.esm.js",
-  "browser": "dist/ElementScrollWatcher.umd.js",
+  "main": "dist/element-scroll-watcher.cjs.js",
+  "module": "dist/element-scroll-watcher.esm.js",
+  "browser": "dist/element-scroll-watcher.umd.js",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "build": "rollup -c"
+    "dev": "cross-env NODE_ENV=develope rollup -c -w",
+    "build": "cross-env NODE_ENV=production rollup -c"
   },
   "keywords": [],
   "author": "eyekorea0@gmail.com",
   "license": "MIT",
   "devDependencies": {
+    "cross-env": "^7.0.2",
+    "del-cli": "^3.0.1",
     "rollup": "^2.28.2",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-serve": "^1.0.4",
     "rollup-plugin-terser": "^7.0.2"
   },
   "repository": {
