@@ -16,7 +16,11 @@
     "format": "prettier-eslint --config \"$(pwd)/.prettierrc\" --eslint-config-path \"$(pwd)/.eslintrc.json\" --list-different --write \"$(pwd)/src/**/*.js\"",
     "test": "jest"
   },
-  "keywords": ["intersectionObserve", "scroll", "ui"],
+  "keywords": [
+    "intersectionObserve",
+    "scroll",
+    "ui"
+  ],
   "author": "eyekorea0@gmail.com",
   "license": "MIT",
   "devDependencies": {
