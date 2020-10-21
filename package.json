@@ -1,19 +1,22 @@
 {
   "name": "element-scroll-watcher",
   "version": "1.0.2",
-  "description": "",
+  "description": "When scrolling, the element is checked on the screen.",
   "main": "dist/element-scroll-watcher.cjs.js",
   "module": "dist/element-scroll-watcher.esm.js",
   "browser": "dist/element-scroll-watcher.umd.js",
   "files": [
-    "dist/"
+    "dist",
+    "src",
+    "demo"
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=develope rollup -c -w",
     "build": "cross-env NODE_ENV=production rollup -c",
-    "format": "prettier-eslint --config \"$(pwd)/.prettierrc\" --eslint-config-path \"$(pwd)/.eslintrc.json\" --list-different --write \"$(pwd)/src/**/*.js\""
+    "format": "prettier-eslint --config \"$(pwd)/.prettierrc\" --eslint-config-path \"$(pwd)/.eslintrc.json\" --list-different --write \"$(pwd)/src/**/*.js\"",
+    "test": "jest"
   },
-  "keywords": [],
+  "keywords": ["intersectionObserve", "scroll", "ui"],
   "author": "eyekorea0@gmail.com",
   "license": "MIT",
   "devDependencies": {

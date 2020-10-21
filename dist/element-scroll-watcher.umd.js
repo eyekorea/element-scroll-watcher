@@ -131,7 +131,6 @@
      * 엘리먼트 개별 기준값 을 대입한 값을 참고하여 화면기준으로 감시되는 엘리면트가 위치하는 X 값의 백분율
      * @returns {Number}
      */
-    // TODO: 개발 필요.
     get percentX() {
       const { element, datumPointX } = this;
       const rect = element.getBoundingClientRect();
