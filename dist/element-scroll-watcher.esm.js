@@ -208,20 +208,20 @@ function elementsArray(elements) {
 /**
  * ElementScrollWatcher 의 기본 setting 값
  * @namespace defaultSetting
- * @property {Window|HTMLElement} root - 스크롤 이벤트가 바인드 되는 영역.
- * @property {Number} activePercentY   - 진입 체크 시작 포인트
- * @property {Number} deActivePercentY -  진입 체크 엔드 포인드
- * @property {Number} activePercentX
- * @property {Number} deActivePercentX
- * @property {Number} activeDelay      - 진입시 해당 시간 후 함수 실행됨.
- * @property {Number} threshold        - intersectionObserve 의 threshold
- * @property {null|function} direct    - 진입했을때 대기 없이 바로 실행 되는 callback
- * @property {null|function} active    - 진입했을때 실행될 callback
- * @property {null|function} deActive  - 나갔을때 실행될 callback
- * @property {null|function} scroll    - 스크롤 될때 실행될 callback
- * @property {boolean} init            - 최초 init 을 할지 옵션
- * @property {string|number} checkY    - top|middle|bottom|custom number(px),target 의 기준점.
- * @property {string|number} checkX    - left|center|right|custom number(px)
+ * @property {Window|HTMLElement} root 스크롤 이벤트가 바인드 되는 영역.
+ * @property {Number} activePercentY 진입 체크 시작 포인트
+ * @property {Number} deActivePercentY 진입 체크 엔드 포인드
+ * @property {Number} activePercentX 진입 체크 시작 포인트(X)
+ * @property {Number} deActivePercentX 진입 체크 엔드 포인드(X)
+ * @property {Number} activeDelay 진입시 해당 시간 후 함수 실행됨.
+ * @property {Number} threshold intersectionObserve 의 threshold
+ * @property {null|function} direct 진입했을때 대기 없이 바로 실행 되는 callback
+ * @property {null|function} active 진입했을때 실행될 callback
+ * @property {null|function} deActive 나갔을때 실행될 callback
+ * @property {null|function} scroll 스크롤 될때 실행될 callback
+ * @property {boolean} init 최초 init 을 할지 옵션
+ * @property {string|number} checkY top|middle|bottom|custom number(px),target 의 기준점.
+ * @property {string|number} checkX left|center|right|custom number(px)
  */
 const defaultSetting = {
   root: null,
@@ -241,6 +241,24 @@ const defaultSetting = {
 };
 
 /**
+ * @typedef Setting
+ * @type {Object}
+ * @property {Window|HTMLElement} root - 스크롤 이벤트가 바인드 되는 영역.
+ * @property {Number} activePercentY 진입 체크 시작 포인트(Y)
+ * @property {Number} deActivePercentY 진입 체크 엔드 포인드(Y)
+ * @property {Number} activePercentX 진입 체크 시작 포인트(X)
+ * @property {Number} deActivePercentX 진입 체크 엔드 포인드(X)
+ * @property {Number} activeDelay 진입시 해당 시간 후 함수 실행됨.
+ * @property {Number} threshold intersectionObserve 의 threshold
+ * @property {null|function} direct 진입했을때 대기 없이 바로 실행 되는 callback
+ * @property {null|function} active 진입했을때 실행될 callback
+ * @property {null|function} deActive 나갔을때 실행될 callback
+ * @property {null|function} scroll 스크롤 될때 실행될 callback
+ * @property {boolean} init 최초 init 을 할지 옵션
+ * @property {string|number} checkY top|middle|bottom|custom number(px),target 의 기준점.
+ * @property {string|number} checkX left|center|right|custom number(px)
+ */
+/**
  * 메인 class.
  * 새로운 스크롤 감시자를 생성한다.
  * @class
@@ -249,21 +267,7 @@ class ElementScrollWatcher {
   /**
    * @constructor
    * @param {String|HTMLElement|HTMLCollection} elements String = selector ex) `.element` or `#id`
-   * @param {Ojbect} setting
-   * @param {Window|HTMLElement} setting.root - 스크롤 이벤트가 바인드 되는 영역.
-   * @param {Number} setting.activePercentY   - 진입 체크 시작 포인트
-   * @param {Number} setting.deActivePercentY -  진입 체크 엔드 포인드
-   * @param {Number} setting.activePercentX
-   * @param {Number} setting.deActivePercentX
-   * @param {Number} setting.activeDelay     - 진입시 해당 시간 후 함수 실행됨.
-   * @param {Number} setting.threshold       - intersectionObserve 의 threshold
-   * @param {null|function} setting.direct   - 진입했을때 대기 없이 바로 실행 되는 callback
-   * @param {null|function} setting.active   - 진입했을때 실행될 callback
-   * @param {null|function} setting.deActive - 나갔을때 실행될 callback
-   * @param {null|function} setting.scroll   - 스크롤 될때 실행될 callback
-   * @param {boolean} setting.init           - 최초 init 을 할지 옵션
-   * @param {string|number} setting.checkY   - top|middle|bottom|custom number(px),target 의 기준점.
-   * @param {string|number} setting.checkX   - left|center|right|custom number(px)
+   * @param {Setting} setting
    */
   constructor(elements, setting = {}) {
     // set
@@ -313,8 +317,9 @@ class ElementScrollWatcher {
 
   /**
    * element 의 dataset.eswId 값을 체크하여 object 를 리턴함.
-   * @param {element} element
-   * @returns {Object} HTMLElement, id, esw object
+   * @param {HTMLElement} element
+   * @returns {{element:HTMLElement, id:String, esw:Object}}
+   * 인자로 받은 element 의 dataset 값을 참조 하여 내장 EswItem 을 함께 리턴.
    */
   getEswObj(element) {
     const id = element.dataset.eswId;
@@ -322,44 +327,55 @@ class ElementScrollWatcher {
     return { element, id, esw };
   }
 
-  // 스크롤시 실행함.
-  mot() {
-    if (this.isDisable) return false;
-    const { checkItems, option } = this;
-    checkItems.forEach((element) => {
-      const item = this.getEswObj(element);
-      const itemYPercent = item.esw.percentY;
-      const itemXPercent = item.esw.percentX;
-      const isIntersecting = item.esw._isIntersecting;
+  /**
+   * @method
+   * 기본적인 동작을 컨트롤 한다.
+   * init 시에 window.scroll 에 해당 함수를 바인딩 한다.
+   * 만약 scroll 을 사용하지 않고 임의의 가상 스크롤을 만들어 내는 경우, 해당 스크롤러의 callback 에서 mot() 가 실행 되도록 한다.
+   * option.scroll callback 이 있을 경우 실행 한다.
+   */
+  static mot() {
+    if (!this.isDisable) {
+      const { checkItems, option } = this;
+      checkItems.forEach((element) => {
+        const item = this.getEswObj(element);
+        const itemYPercent = item.esw.percentY;
+        const itemXPercent = item.esw.percentX;
+        const isIntersecting = item.esw._isIntersecting;
 
-      const isActiveY = option.activePercentY < itemYPercent;
-      const isDeActiveY = option.deActivePercentY < itemYPercent;
-      const isActiveX = option.activePercentX < itemXPercent;
-      const isDeActiveX = option.deActivePercentX < itemXPercent;
+        const isActiveY = option.activePercentY < itemYPercent;
+        const isDeActiveY = option.deActivePercentY < itemYPercent;
+        const isActiveX = option.activePercentX < itemXPercent;
+        const isDeActiveX = option.deActivePercentX < itemXPercent;
 
-      if (isActiveY && isActiveX) {
-        if (isDeActiveY || isDeActiveX) {
-          item.esw.deActive();
+        if (isActiveY && isActiveX) {
+          if (isDeActiveY || isDeActiveX) {
+            item.esw.deActive();
+          } else {
+            item.esw.active();
+          }
         } else {
-          item.esw.active();
+          item.esw.deActive();
         }
-      } else {
-        item.esw.deActive();
-      }
 
-      /**
-       * @namespace percent
-       * @property {Number} x - x축으로 이동된 양(백분율)
-       * @property {Number} y - y축으로 이동된 양(백분율)
-       */
-      const percent = {
-        x: itemXPercent,
-        y: itemYPercent,
-      };
-      option.scroll && option.scroll(element, percent, isIntersecting);
-    });
+        /**
+         * @namespace percent
+         * @property {Number} x - x축으로 이동된 양(백분율)
+         * @property {Number} y - y축으로 이동된 양(백분율)
+         */
+        const percent = {
+          x: itemXPercent,
+          y: itemYPercent,
+        };
+        option.scroll && option.scroll(element, percent, isIntersecting);
+      });
+    }
   }
-
+  /**
+   * @method
+   * 최초 객체를 셋업한다.
+   * init 이 된 상태라면 추가로 동작 하지 않는다.
+   */
   init() {
     const { items, io, option, mot } = this;
     this.boundMot = mot.bind(this);
@@ -391,12 +407,24 @@ class ElementScrollWatcher {
     this.items = this.items.concat(addItems);
     this.init();
   }
+
+  /**
+   * 해당 클래스를 비활성화 한다.
+   */
   disable() {
     this.isDisable = true;
   }
+
+  /**
+   * 해당 클래스를 활성화 한다.
+   */
   enable() {
     this.isDisable = false;
   }
+
+  /**
+   * 해당 클래스를 영구적으로 제거 한다.
+   */
   destroy() {
     const { items, io, option } = this;
     option.root.removeEventListener('scroll', this.boundMot, false);
