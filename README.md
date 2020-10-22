@@ -2,7 +2,7 @@
 지정된 element 가 viewport 를 기준으로 지정된 위치에 왔을때 지정된 시간 이후 지정된 callback 을 실행 합니다..
 
 ## install
-`npm install --save https://github.com/eyekorea/element-scroll-watcher.git`
+`npm install --save element-scroll-watcher`
 
 ## use
 
