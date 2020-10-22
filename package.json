@@ -5,6 +5,7 @@
   "main": "dist/element-scroll-watcher.cjs.js",
   "module": "dist/element-scroll-watcher.esm.js",
   "browser": "dist/element-scroll-watcher.umd.js",
+  "types": "dist/element-scroll-watcher.d.ts",
   "files": [
     "dist",
     "src",
@@ -12,9 +13,9 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=develope rollup -c -w",
-    "build": "cross-env NODE_ENV=production rollup -c",
+    "build": "cross-env NODE_ENV=production rollup -c && tsc",
     "format": "prettier-eslint --config \"$(pwd)/.prettierrc\" --eslint-config-path \"$(pwd)/.eslintrc.json\" --list-different --write \"$(pwd)/src/**/*.js\"",
-    "test": "jest"
+    "tsc": "tsc"
   },
   "keywords": [
     "intersectionObserve",
@@ -34,7 +35,8 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-serve": "^1.0.4",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.0.3"
   },
   "repository": {
     "type": "git",
