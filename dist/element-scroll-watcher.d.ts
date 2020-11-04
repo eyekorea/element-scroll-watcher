@@ -23,14 +23,6 @@
  */
 export default class ElementScrollWatcher {
     /**
-     * @method
-     * 기본적인 동작을 컨트롤 한다.
-     * init 시에 window.scroll 에 해당 함수를 바인딩 한다.
-     * 만약 scroll 을 사용하지 않고 임의의 가상 스크롤을 만들어 내는 경우, 해당 스크롤러의 callback 에서 mot() 가 실행 되도록 한다.
-     * option.scroll callback 이 있을 경우 실행 한다.
-     */
-    static mot(): void;
-    /**
      * @constructor
      * @param {String|HTMLElement|HTMLCollection} elements String = selector ex) `.element` or `#id`
      * @param {Setting} setting
@@ -47,6 +39,14 @@ export default class ElementScrollWatcher {
         id: string;
         esw: any;
     };
+    /**
+     * @method
+     * 기본적인 동작을 컨트롤 한다.
+     * init 시에 window.scroll 에 해당 함수를 바인딩 한다.
+     * 만약 scroll 을 사용하지 않고 임의의 가상 스크롤을 만들어 내는 경우, 해당 스크롤러의 callback 에서 mot() 가 실행 되도록 한다.
+     * option.scroll callback 이 있을 경우 실행 한다.
+     */
+    mot(): void;
     /**
      * @method
      * 최초 객체를 셋업한다.

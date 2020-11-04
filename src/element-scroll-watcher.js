@@ -334,7 +334,7 @@ export default class ElementScrollWatcher {
    * 만약 scroll 을 사용하지 않고 임의의 가상 스크롤을 만들어 내는 경우, 해당 스크롤러의 callback 에서 mot() 가 실행 되도록 한다.
    * option.scroll callback 이 있을 경우 실행 한다.
    */
-  static mot() {
+  mot() {
     if (!this.isDisable) {
       const { checkItems, option } = this;
       checkItems.forEach((element) => {
