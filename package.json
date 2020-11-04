@@ -1,6 +1,6 @@
 {
   "name": "element-scroll-watcher",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "When scrolling, the element is checked on the screen.",
   "main": "dist/element-scroll-watcher.cjs.js",
   "module": "dist/element-scroll-watcher.esm.js",
