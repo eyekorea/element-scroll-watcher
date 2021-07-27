@@ -9,7 +9,7 @@
 ```js
 import ElementScrollWatcher from 'element-scroll-watcher';
 
-const esw = ElementScrollWatcher('.observeCheck', {  // 셀럭터( String ) 를 넘기거나, nodeList, element 를 넘겨줄 수 있다.
+const esw = new ElementScrollWatcher('.observeCheck', {  // 셀럭터( String ) 를 넘기거나, nodeList, element 를 넘겨줄 수 있다.
   root : window,
   active : (element)=>{
     element.classList.add('active');
